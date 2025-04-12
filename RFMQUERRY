@@ -1,0 +1,22 @@
+WITH rfm AS (
+  SELECT 
+    transaction_id, 
+    store_id,
+    store_location,
+    product_id,
+    SUM(transaction_qty * unit_price) AS total_spent,
+    COUNT(transaction_id) AS total_transactions,
+    MAX(transaction_date) AS last_transaction_date
+  FROM `portfolio-454520.Coffe.Coffe Sales`
+  GROUP BY transaction_id, store_id, store_location, product_id
+)
+SELECT 
+  store_id,
+  store_location,
+  COUNT(transaction_id) AS total_customers,
+  AVG(total_transactions) AS avg_frequency,
+  AVG(total_spent) AS avg_monetary,
+  MAX(last_transaction_date) AS most_recent_purchase
+FROM rfm
+GROUP BY store_id, store_location
+ORDER BY avg_monetary DESC;
